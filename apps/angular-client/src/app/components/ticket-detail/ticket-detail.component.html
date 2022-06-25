@@ -31,7 +31,7 @@
                                 *ngIf="(usersLoading | async) === false; else loadingSpinnerSmall"
                                 class="btn btn-light dropdown-toggle ml-2 text-left"
                         >
-                            <option *ngIf="!ticketState.ticket.assigneeId">Choose...</option>
+                            <option *ngIf="!ticketState.ticket.assigneeId" [ngValue]="null">Choose...</option>
                             <option *ngFor="let user of (usersList | async)" [ngValue]="user.id">{{user.name}}</option>
                         </select>
                     </p>
