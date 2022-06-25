@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-header">
+        <p class="card-text text-muted">
+            Ticket: {{ ticket.id }}
+            <span *ngIf="ticket.completed" class="badge rounded-pill text-bg-success float-end">Completed</span>
+            <span *ngIf="!ticket.completed" class="badge rounded-pill text-bg-secondary float-end">Pending</span>
+        </p>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ ticket.description }}.</h5>
+        <p class="card-text text-muted" *ngIf="ticket.assigneeId">
+            Assigned to <span *ngIf="(usersLoading | async) === false; else loadingSmall">
+            {{(assignedUser | async)?.name || "User not found"}}
+        </span>
+        <p class="card-text text-muted" *ngIf="!ticket.assigneeId">
+            Unassigned
+        </p>
+        <a [routerLink]="ticket.id.toString()" class="card-link">View</a>
+    </div>
+</div>
+
+<ng-template #loadingSmall>
+    <span class="spinner-border  spinner-border-sm">
+        <span class="visually-hidden">Loading...</span>
+    </span>
+</ng-template>

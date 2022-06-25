@@ -1,0 +1,72 @@
+<div class="container pb-3">
+    <div class="row">
+        <div class="col">
+            <h2>Tickets</h2>
+        </div>
+    </div>
+
+    <div class="row pb-3">
+        <div class="col">
+            <div class="btn-group">
+                <button class="btn btn-outline-primary"
+                        (click)="selectFilter(ticketFilters.All)"
+                        [class.active]="currentFilter === ticketFilters.All">
+                    All
+                </button>
+                <button class="btn btn-outline-primary"
+                        (click)="selectFilter(ticketFilters.Completed)"
+                        [class.active]="currentFilter === ticketFilters.Completed">
+                    Completed
+                </button>
+                <button
+                        class="btn btn-outline-primary"
+                        (click)="selectFilter(ticketFilters.Pending)"
+                        [class.active]="currentFilter === ticketFilters.Pending">
+                    Pending
+                </button>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="(ticketsLoading$ | async) === false; else listLoading">
+        <ng-container *ngIf="filterList((tickets$ | async), currentFilter) as ticketsList; ">
+            <p *ngIf="ticketsList.length === 0">
+                No tickets found
+            </p>
+            <div class="row mb-3" *ngFor="let t of ticketsList; trackBy:trackById">
+                <div class="col">
+                    <acme-ticket-card [ticket]="t.ticket">
+                    </acme-ticket-card>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+
+
+    <div class="row">
+        <div class="col">
+            <form ngForm class="input-group" (submit)="createTicket()">
+                <input [(ngModel)]="createTicketDescription" [ngModelOptions]="{standalone: true}" [disabled]="creatingTicket" type="text"
+                       class="form-control" placeholder="Ticket description">
+                <div class="input-group-append" id="button-addon4">
+                    <button [disabled]="creatingTicket || !createTicketDescription" class="btn btn-primary" type="submit">
+                        <div *ngIf="creatingTicket" class="spinner-border  spinner-border-sm">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #listLoading>
+    <div class="row mb-3">
+        <div class="col">
+            <div class="spinner-border">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</ng-template>

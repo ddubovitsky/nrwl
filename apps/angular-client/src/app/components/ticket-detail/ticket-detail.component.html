@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="row" *ngIf="(ticket$ | async) as ticketState">
+        <div *ngIf="!ticketState.ticket  && ticketState.updating">
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="spinner-border">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col" *ngIf="ticketState.ticket">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-text text-muted">
+                    <span class="spinner-border  spinner-border-sm" *ngIf="ticketState.updating">
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                        Ticket: {{ ticketState.ticket.id }}
+                        <span *ngIf="ticketState.ticket.completed" class="badge rounded-pill text-bg-success float-end">Completed</span>
+                        <span *ngIf="!ticketState.ticket.completed" class="badge rounded-pill text-bg-secondary float-end">Pending</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ ticketState.ticket.description }}.</h5>
+                    <p class="card-text text-muted">
+                        Assigned to
+                        <select
+                                [ngModel]="ticketState.ticket.assigneeId"
+                                (ngModelChange)="assignUser(ticketState.ticket.id, $event)"
+                                *ngIf="(usersLoading | async) === false; else loadingSpinnerSmall"
+                                class="btn btn-light dropdown-toggle ml-2 text-left"
+                        >
+                            <option *ngIf="!ticketState.ticket.assigneeId">Choose...</option>
+                            <option *ngFor="let user of (usersList | async)" [ngValue]="user.id">{{user.name}}</option>
+                        </select>
+                    </p>
+                    <button *ngIf="!ticketState.ticket.completed" (click)="toggleTicketCompletion(ticketState.ticket.id, true)"
+                            type="button" class="btn btn-success w-100">Complete
+                    </button>
+                    <button *ngIf="ticketState.ticket.completed" (click)="toggleTicketCompletion(ticketState.ticket.id, false)"
+                            type="button" class="btn btn-secondary w-100">Uncomplete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="showInvalidParamError">
+        Invalid ticket number
+    </div>
+</div>
+
+
+<ng-template #loadingSpinnerSmall>
+    <div class="spinner-border  spinner-border-sm">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</ng-template>
